@@ -91,7 +91,8 @@ func TestInterface(t *testing.T) {
 
 	// test struct
 	var returned I
-	env.JSON(k, &returned)
+	err := env.JSON(k, &returned)
+	is.NoErr(err)
 
 	expected := "someInnerVal"
 	is.True(returned.Keys["keys"]["embedded"] != expected)

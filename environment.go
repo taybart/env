@@ -11,7 +11,6 @@ import (
 )
 
 var (
-	env   = map[string]string{}
 	keyRE = regexp.MustCompile(`([[:word:]]+)([=?])?(.*)?`)
 	// Optional keys that should be set to zero value
 	optionalKeys map[string]bool
