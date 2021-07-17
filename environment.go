@@ -124,14 +124,15 @@ func JSON(key string, input interface{}) error {
 	if val, found := os.LookupEnv(key); found {
 		err := json.Unmarshal([]byte(val), input)
 		if err != nil {
-			return fmt.Errorf("could not unmarshal %s: (value: %+v) ", key, val)
+			return fmt.Errorf("could not unmarshal %s: (value: %+v) %v", key, val, err)
 		}
+		return nil
 	}
 	if _, found := optionalKeys[key]; found {
 		return nil
 	}
 
-	log.Fatalf("Trying to retrieve uninitialized environment variable: %s\n", key)
+	log.Fatalf("Trying to retrieve uninitialized environment variable: %s, found (should show nothing) %s\n", key, os.Getenv(key))
 	return nil
 }
 

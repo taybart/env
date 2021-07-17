@@ -83,17 +83,15 @@ func TestInterface(t *testing.T) {
 	// Define key
 	k := "TEST_INTERFACE"
 
-	type I struct {
-		Keys map[string]map[string]string `json:"keys"`
-	}
-	// expected by call to be set, particular value doesn't matter
-	os.Setenv(k, `{"keys": {"embedded": "someInnerVal"}, {"someOtherKey": "key": "val"}}`)
+	// expected by call to be set, particular value doesn't matter as long as the type is correct
+	os.Setenv(k, `{"key": "val", "other": "sudo su"}`)
 
 	// test struct
-	var returned I
+	var returned map[string]string
 	err := env.JSON(k, &returned)
 	is.NoErr(err)
 
-	expected := "someInnerVal"
-	is.True(returned.Keys["keys"]["embedded"] != expected)
+	// Should get the correct value
+	expected := "val"
+	is.True(returned["key"] == expected)
 }
