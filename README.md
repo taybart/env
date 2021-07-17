@@ -50,7 +50,7 @@ func main() {
 
 #### Installation
 
-`go install github.com/taybart/env/cmd/scanev`
+`go install github.com/taybart/env/cmd/scanenv`
 
 #### Generate env file
 

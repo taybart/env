@@ -128,20 +128,20 @@ func (v visitor) EnvToMap() (map[string]string, map[string]bool) {
 
 func (v visitor) ToEnvFile() string {
 	e := []string{}
-	for _, e := range v.env {
-		e = append(e, e...)
+	for _, en := range v.env {
+		e = append(e, en...)
 	}
 	e = dedupe(e)
 
 	output := ""
 	optional := env.GetOptional(e)
-	for i, k := range env {
+	for i, k := range e {
 		key, val := env.GetDefault(k[1 : len(k)-1])
 		if optional[key] {
 			val = "Value is marked as optional"
 		}
 		output += fmt.Sprintf("%s=\"%s\"", key, val)
-		if i < len(env)-1 {
+		if i < len(e)-1 {
 			output += "\n"
 		}
 	}
