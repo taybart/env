@@ -11,7 +11,10 @@ import (
 func main() {
 	app := args.App{}
 	app = app.Import(scan.Args)
-	app.Parse()
+	err := app.Parse()
+	if err != nil {
+		panic(err)
+	}
 
 	if err := scan.Scan(app); err != nil {
 		fmt.Println(err)
