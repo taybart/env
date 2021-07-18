@@ -9,7 +9,7 @@ import (
 func main() {
 	env.Set([]string{
 		"ENV",
-		"PORT=69",
+		"PORT=6969",
 	})
 
 	if env.Is("ENV", "production") {

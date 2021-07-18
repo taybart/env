@@ -25,5 +25,5 @@ func TestScan(t *testing.T) {
 	out, _ := ioutil.ReadAll(r)
 	os.Stdout = rescueStdout
 	// use hijacked output
-	is.True(strings.Compare(strings.ReplaceAll(string(out), "\n", ""), `ENV=""PORT="69"`) == 0)
+	is.True(strings.Compare(strings.ReplaceAll(string(out), "\n", ""), `ENV=""PORT="6969"`) == 0)
 }
