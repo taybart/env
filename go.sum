@@ -1,7 +1,5 @@
 github.com/matryer/is v1.4.0 h1:sosSmIWwkYITGrxZ25ULNDeKiMNzFSr4V/eqBQP0PeE=
 github.com/matryer/is v1.4.0/go.mod h1:8I/i5uYgLzgsgEloJE1U6xx5HkBQpAZvepWuujKwMRU=
-github.com/taybart/args v0.0.0-20210717232234-20cbe0d9120e h1:T8jJBY9rduZ8ekNcEEfmaLvPQtsEWvbDyvkRLXVxwD4=
-github.com/taybart/args v0.0.0-20210717232234-20cbe0d9120e/go.mod h1:l8CZDnKNf9iNMfX7UOSq7BbwpmwOLcJ7A6DehAP6A+g=
 github.com/taybart/args v0.0.0-20210717235522-38130e018c56 h1:oGL8dVpPZD9iM5gxbuQhvTcYJwbwaHs3uTz/knPsdgw=
 github.com/taybart/args v0.0.0-20210717235522-38130e018c56/go.mod h1:l8CZDnKNf9iNMfX7UOSq7BbwpmwOLcJ7A6DehAP6A+g=
 github.com/taybart/log v1.4.1 h1:W33bTp9iviJxhohNXkU7Og7n63D2zKufP8hn2nO5Jfk=
