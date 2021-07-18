@@ -13,23 +13,23 @@ import (
 
 func main() {
   os.Setenv("ENVS_ARE_FUN", "true")
-  os.Setenv("ENVS_ARE_COMPLICATED", `{ "test": "json?" }`)
+  os.Setenv("WOOT", `{ "yes": "even_json" }`)
 
   env.Set([]string{
       "ENVS_ARE_FUN",
-      "ENVS_ARE_COMPLICATED",
+      "WOOT",
       "PORT=8080", // default values
       "INSECURE?", // optional values, default to go "zero values"
   })
 
 
   config := struct{
-    Test string `json:"test"`
+    Yes string `json:"yes"`
   }{}
 
-  env.JSON("ENVS_ARE_COMPLICATED", &config)
+  env.JSON("WOOT", &config)
 
-  fmt.Println(config.Test)
+  fmt.Println(config.Yes)
 
   // check if vars are defined
   if env.Has("INSECURE") || env.Bool("INSECURE") {
