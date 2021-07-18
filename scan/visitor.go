@@ -1,4 +1,4 @@
-package main
+package scan
 
 import (
 	"errors"
@@ -49,7 +49,7 @@ func (v *visitor) Load(filename string) (ast.Node, error) {
 		}
 	}
 	if !usesEnv {
-		return nil, errors.New("Does not use env package")
+		return nil, errors.New("does not use env package")
 	}
 	return node, nil
 }
