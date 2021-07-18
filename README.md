@@ -57,18 +57,17 @@ func main() {
 Single File:
 
 ```sh
-env_scanner -f ./main.go
-
+$ scanenv -f ./main.go
 ENVS_ARE_FUN=""
 ENVS_ARE_COMPLICATED=""
 PORT="8080"
 INSECURE="Value marked as optional"
 ```
 
-Directory:
+Recursive Directory:
 
 ```sh
-$ env_scanner -d ./
+$ scanenv -d .
 ENVS_ARE_FUN=""
 ENVS_ARE_COMPLICATED=""
 PORT="8080"
@@ -78,7 +77,7 @@ INSECURE="Value marked as optional"
 #### Get where env is declared
 
 ```sh
-$ env_scanner -d ./ -p
+$ scanenv -d . -p
 # ./main.go
 ENVS_ARE_FUN=""
 ENVS_ARE_COMPLICATED=""
@@ -92,9 +91,8 @@ REDIS_PORT=""
 #### Validate .env file
 
 ```sh
-$ env_scanner -d ./ -validate .env
-~~Missing Required~~
-   ENV
-~~Using default~~
-   PORT=8080
+$ scanenv -d ./ -validate .env
+[ERROR] Missing required env
+ENV
+[WARN] Using default value for PORT=69
 ```
