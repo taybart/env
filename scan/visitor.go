@@ -96,7 +96,7 @@ func (v *visitor) Visit(n ast.Node) bool {
 			}
 		}
 	case *ast.CallExpr: // line contains a function call
-		if isPkgDot(n.Fun, v.packageName, "Set") { // check that function call is env.Set() (handles import renames)
+		if isPkgDot(n.Fun, v.packageName, "Add") { // check that function call is env.Set() (handles import renames)
 			switch arg := n.Args[0].(type) {
 			case *ast.CompositeLit: // function was passed anon []string
 				arr, _ := getStringArray(arg)

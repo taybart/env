@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	env.Set([]string{
+	env.Add([]string{
 		"ENV",
 		"PORT=6969",
 	})

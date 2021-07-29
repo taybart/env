@@ -15,7 +15,7 @@ func main() {
   os.Setenv("ENVS_ARE_FUN", "true")
   os.Setenv("WOOT", `{ "yes": "even_json" }`)
 
-  env.Set([]string{
+  env.Add([]string{
       "ENVS_ARE_FUN",
       "WOOT",
       "PORT=8080", // default values

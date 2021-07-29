@@ -14,7 +14,7 @@ func TestDefault(t *testing.T) {
 	// Define key
 	k := "TEST_DEFAULT"
 	v := "default_value"
-	env.Set([]string{fmt.Sprintf("%s=%s", k, v)})
+	env.Add([]string{fmt.Sprintf("%s=%s", k, v)})
 	is.True(env.Is(k, v))
 }
 
@@ -25,7 +25,7 @@ func TestOptionalKey(t *testing.T) {
 	k := "TEST_OPTIONAL_KEY"
 
 	// Add optional to env
-	env.Set([]string{
+	env.Add([]string{
 		fmt.Sprintf("%s?", k),
 	})
 	// make sure its empty string

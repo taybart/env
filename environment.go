@@ -16,12 +16,12 @@ var (
 	optionalKeys map[string]bool
 )
 
-/* Set : environment variables for use later. This is global to the project
+/* Add : environment variables for use later. This is global to the project
  * requred -> NAME
  * with_default -> NAME=taybart
  * optional -> NAME? // defaults to zero value
  */
-func Set(keys []string) {
+func Add(keys []string) {
 	err := Ensure(keys)
 	if err != nil {
 		panic(err)
@@ -56,7 +56,7 @@ func Ensure(keys []string) error {
 	}
 
 	if len(missingKeys) > 0 {
-		return fmt.Errorf("Set all required environment variables: %v", missingKeys)
+		return fmt.Errorf("set all required environment variables: %v", missingKeys)
 	}
 	return nil
 }
