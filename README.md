@@ -32,10 +32,15 @@ func main() {
   env.JSON("WOOT", &config)
 
   fmt.Println(config.Yes)
+  fmt.Println(env.Bool("INSECURE"))
 
   // check if vars are defined
-  if env.Has("INSECURE") || env.Bool("INSECURE") {
-    fmt.Println("This is super insecure now")
+  if env.Has("INSECURE") {
+    fmt.Println("INSECURE is not defined")
+  }
+  // default zero values
+  if !env.Bool("INSECURE") {
+    fmt.Println("This is super secure now")
   }
 
   if env.Bool("ENVS_ARE_FUN") {
@@ -44,7 +49,7 @@ func main() {
 
   // look up random envs
   home := env.Get("HOME")
-  fmt.Println("HOME=%s", home)
+  fmt.Printf("HOME=%s\n", home)
 }
 ```
 
