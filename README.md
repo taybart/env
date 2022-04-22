@@ -2,7 +2,7 @@
 
 [![test](https://github.com/taybart/env/actions/workflows/test.yaml/badge.svg)](https://github.com/taybart/env/actions/workflows/test.yaml)
 
-An environment package which will take in a list of keys and the secrets manager from AWS and get the default values for any keys that are not already defined as environment variables.
+Easy environments in go!
 
 ```go
 package main
@@ -52,7 +52,7 @@ func main() {
 }
 ```
 
-## CLI
+## Generate env requirements with the CLI
 
 #### Installation
 
