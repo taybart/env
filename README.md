@@ -8,9 +8,8 @@ An environment package which will take in a list of keys and the secrets manager
 package main
 
 import (
-	"fmt"
-	"os"
-
+  "fmt"
+  "os"
   "github.com/taybart/env"
 )
 
