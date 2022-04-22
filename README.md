@@ -17,7 +17,7 @@ func main() {
   // set some env
   os.Setenv("ENVS_ARE_FUN", "true")
   os.Setenv("WOOT", `{ "yes": "even_json" }`)
-
+  // Declare our env for this file
   env.Add([]string{
       "ENVS_ARE_FUN",
       "WOOT",
