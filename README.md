@@ -32,10 +32,9 @@ func main() {
   env.JSON("WOOT", &config)
 
   fmt.Println(config.Yes)
-  fmt.Println(env.Bool("INSECURE"))
 
   // check if vars are defined
-  if env.Has("INSECURE") {
+  if !env.Has("INSECURE") {
     fmt.Println("INSECURE is not defined")
   }
   // default zero values
