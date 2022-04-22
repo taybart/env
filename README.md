@@ -14,6 +14,7 @@ import (
 )
 
 func main() {
+  // set some env
   os.Setenv("ENVS_ARE_FUN", "true")
   os.Setenv("WOOT", `{ "yes": "even_json" }`)
 
