@@ -152,7 +152,7 @@ func Scan(app args.App) error {
 	}
 
 	if app.Bool("print") {
-		fmt.Println("by file", v.EnvByFile())
+		fmt.Println(v.EnvByFile())
 		return nil
 	}
 	fmt.Println(v.ToEnvFile())
