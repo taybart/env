@@ -1,7 +1,7 @@
 package scan_test
 
 import (
-	"io/ioutil"
+	"io"
 	"os"
 	"strings"
 	"testing"
@@ -12,7 +12,7 @@ import (
 
 func TestScan(t *testing.T) {
 	is := is.New(t)
-	os.Args = []string{"./test", "-f", "./test_project/main.go"}
+	os.Args = []string{"./test", "-d", "./test_project", "-t", "test_tags,other_test"}
 	err := scan.Args.Parse()
 	is.NoErr(err)
 	// hijack stdout
@@ -22,8 +22,8 @@ func TestScan(t *testing.T) {
 	err = scan.Scan(scan.Args)
 	is.NoErr(err)
 	w.Close()
-	out, _ := ioutil.ReadAll(r)
-	os.Stdout = rescueStdout
+	out, _ := io.ReadAll(r)
 	// use hijacked output
-	is.True(strings.Compare(strings.ReplaceAll(string(out), "\n", ""), `ENV=""PORT="6969"`) == 0)
+	os.Stdout = rescueStdout
+	is.True(strings.Compare(strings.ReplaceAll(string(out), "\n", ""), `ENV=""PORT="6969"BUILD_TAG=""`) == 0)
 }

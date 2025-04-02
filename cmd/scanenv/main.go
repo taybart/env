@@ -9,10 +9,10 @@ import (
 )
 
 func main() {
+
 	app := args.App{}
 	app = app.Import(scan.Args)
-	err := app.Parse()
-	if err != nil {
+	if err := app.Parse(); err != nil {
 		panic(err)
 	}
 
