@@ -26,9 +26,9 @@ func main() {
   })
 
 
-  config := struct{
+  var config struct{
     Yes string `json:"yes"`
-  }{}
+  }
 
   env.JSON("WOOT", &config)
 
@@ -81,6 +81,17 @@ PORT="8080"
 INSECURE="Value marked as optional"
 ```
 
+Build tags:
+
+```sh
+$ scanenv -d . -t production,fancy
+ENVS_ARE_FUN=""
+ENVS_ARE_COMPLICATED=""
+PORT="8080"
+INSECURE="Value marked as optional"
+FANCY_PRODUCTION_MARK="✓"
+```
+
 #### Get where env is declared
 
 ```sh
@@ -98,7 +109,7 @@ REDIS_PORT=""
 #### Validate .env file
 
 ```sh
-$ scanenv -d ./ -validate .env
+$ scanenv -d . --validate .env
 [ERROR] Missing required env
 ENV
 [WARN] Using default value for PORT=69
