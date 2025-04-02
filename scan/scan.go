@@ -151,8 +151,8 @@ func Scan(app args.App) error {
 
 	}
 
-	if app.Get("print").IsSet() {
-		fmt.Println(v.EnvByFile())
+	if app.Bool("print") {
+		fmt.Println("by file", v.EnvByFile())
 		return nil
 	}
 	fmt.Println(v.ToEnvFile())
