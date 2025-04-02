@@ -27,22 +27,18 @@ var (
 		Args: map[string]*args.Arg{
 			"files": {
 				Short: "f",
-				Long:  "files",
 				Help:  "Comma seperated files to check (./main.go,./util.go)",
 			},
 			"directory": {
 				Short: "d",
-				Long:  "directory",
 				Help:  "Scan directory",
 			},
 			"validate": {
 				Short: "v",
-				Long:  "validate",
 				Help:  "File to validate env config against",
 			},
 			"print": {
 				Short:   "p",
-				Long:    "print",
 				Help:    "Print contents in env file format, will add file tags above each env",
 				Default: false,
 			},
