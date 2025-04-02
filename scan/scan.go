@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"go/ast"
+	"go/build"
 	"io"
 	"os"
 	"path/filepath"
@@ -26,24 +27,25 @@ var (
 		Args: map[string]*args.Arg{
 			"files": {
 				Short: "f",
-				Long:  "files",
 				Help:  "Comma seperated files to check (./main.go,./util.go)",
 			},
 			"directory": {
 				Short: "d",
-				Long:  "directory",
 				Help:  "Scan directory",
 			},
 			"validate": {
 				Short: "v",
-				Long:  "validate",
 				Help:  "File to validate env config against",
 			},
 			"print": {
 				Short:   "p",
-				Long:    "print",
 				Help:    "Print contents in env file format, will add file tags above each env",
 				Default: false,
+			},
+			"tags": {
+				Short:   "t",
+				Help:    "Use go build tags",
+				Default: "",
 			},
 		},
 	}
@@ -73,6 +75,16 @@ func Scan(app args.App) error {
 				return e
 			}
 			if re.Match([]byte(path)) {
+				// check if build tags apply
+				if app.Get("tags").IsSet() {
+					ok, err := checkBuildTags(strings.Split(app.Get("tags").String(), ","), path)
+					if err != nil {
+						return err
+					}
+					if !ok {
+						return nil
+					}
+				}
 				files = append(files, path)
 			}
 			return nil
@@ -139,8 +151,8 @@ func Scan(app args.App) error {
 
 	}
 
-	if app.Get("print").IsSet() {
-		fmt.Println(v.EnvByFile())
+	if app.Bool("print") {
+		fmt.Println("by file", v.EnvByFile())
 		return nil
 	}
 	fmt.Println(v.ToEnvFile())
@@ -155,4 +167,10 @@ func isPiped() bool {
 	}
 
 	return info.Mode()&os.ModeCharDevice == 0
+}
+
+func checkBuildTags(tags []string, path string) (bool, error) {
+	context := build.Default
+	context.BuildTags = tags
+	return context.MatchFile(filepath.Dir(path), filepath.Base(path))
 }

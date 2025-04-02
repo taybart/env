@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -9,10 +10,13 @@ import (
 )
 
 func main() {
+
 	app := args.App{}
 	app = app.Import(scan.Args)
-	err := app.Parse()
-	if err != nil {
+	if err := app.Parse(); err != nil {
+		if errors.Is(err, args.ErrUsageRequested) {
+			return
+		}
 		panic(err)
 	}
 
