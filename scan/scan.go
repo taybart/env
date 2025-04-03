@@ -13,45 +13,19 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/taybart/args"
 	"github.com/taybart/env"
 	"github.com/taybart/log"
 )
 
-var (
-	Args = args.App{
-		Name:    "scanenv",
-		Version: "v0.0.1",
-		Author:  "Taylor Bartlett <taybart@email.com>",
-		About:   "check for defined env vars in a project or file",
-		Args: map[string]*args.Arg{
-			"files": {
-				Short: "f",
-				Help:  "Comma seperated files to check (./main.go,./util.go)",
-			},
-			"directory": {
-				Short: "d",
-				Help:  "Scan directory",
-			},
-			"validate": {
-				Short: "v",
-				Help:  "File to validate env config against",
-			},
-			"print": {
-				Short:   "p",
-				Help:    "Print contents in env file format, will add file tags above each env",
-				Default: false,
-			},
-			"tags": {
-				Short:   "t",
-				Help:    "Use go build tags",
-				Default: "",
-			},
-		},
-	}
-)
+type Config struct {
+	Dir        string `arg:"directory"`
+	Files      string `arg:"files"`
+	Tags       string `arg:"tags"`
+	PrintFiles bool   `arg:"print"`
+	Validate   string `arg:"validate"`
+}
 
-func Scan(app args.App) error {
+func Scan(config Config) (string, error) {
 	files := []string{}
 
 	switch {
@@ -67,17 +41,16 @@ func Scan(app args.App) error {
 		}
 		files = strings.Split(string(fns), "\n")
 
-	case app.Get("directory").IsSet(): // directory specified
+	case config.Dir != "": // directory specified
 		re := regexp.MustCompile(`[[:alnum:]\/\._\-]+.go$`)
-		dir := app.String("directory")
-		err := filepath.Walk(dir, func(path string, _ os.FileInfo, e error) error {
+		err := filepath.Walk(config.Dir, func(path string, _ os.FileInfo, e error) error {
 			if e != nil {
 				return e
 			}
 			if re.Match([]byte(path)) {
 				// check if build tags apply
-				if app.Get("tags").IsSet() {
-					ok, err := checkBuildTags(strings.Split(app.Get("tags").String(), ","), path)
+				if config.Tags != "" {
+					ok, err := checkBuildTags(strings.Split(config.Tags, ","), path)
 					if err != nil {
 						return err
 					}
@@ -90,13 +63,13 @@ func Scan(app args.App) error {
 			return nil
 		})
 		if err != nil {
-			return err
+			return "", err
 		}
 
-	case app.Get("files").IsSet(): // csv of files
-		files = strings.Split(app.String("files"), ",")
+	case config.Files != "": // csv of files
+		files = strings.Split(config.Files, ",")
 	default:
-		return errors.New("no files specified")
+		return "", errors.New("no files specified")
 	}
 
 	// Get down to buisness
@@ -108,13 +81,13 @@ func Scan(app args.App) error {
 		}
 		ast.Inspect(node, v.Visit)
 	}
-	if app.Get("validate").IsSet() {
-		log.Debug("Should Validate", app.String("validate"))
+	if config.Validate != "" {
+		log.Debug("Should Validate", config.Validate)
 		foundEnv, optional := v.EnvToMap()
 
-		envToTest, err := parseEnvFile(app.String("validate"))
+		envToTest, err := parseEnvFile(config.Validate)
 		if err != nil {
-			return err
+			return "", err
 		}
 		missing := []string{}
 		usingDefault := []string{}
@@ -147,16 +120,14 @@ func Scan(app args.App) error {
 				log.Warnf("Using default value for %s=%s\n", k, strings.Trim(d, `"`))
 			}
 		}
-		return nil
+		return "", nil
 
 	}
 
-	if app.Bool("print") {
-		fmt.Println(v.EnvByFile())
-		return nil
+	if config.PrintFiles {
+		return v.EnvByFile(), nil
 	}
-	fmt.Println(v.ToEnvFile())
-	return nil
+	return v.ToEnvFile(), nil
 }
 
 // Check if program has data piped to it
