@@ -27,6 +27,4 @@ func TestScan(t *testing.T) {
 	))
 	resF := strings.ReplaceAll(res.ToFile(), "\n", "")
 	is.True(strings.Compare(resF, `BUILD_TAG_TEST=""ENV=""PORT="6969"SECURE="value is marked as optional"`) == 0)
-
-	// fmt.Println(res.EnvByFile())
 }

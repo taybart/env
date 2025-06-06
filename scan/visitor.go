@@ -2,13 +2,14 @@ package scan
 
 import (
 	"errors"
+	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
+	"os"
 	"strings"
 
 	"github.com/taybart/env"
-	"github.com/taybart/log"
 )
 
 type visitor struct {
@@ -35,7 +36,7 @@ func (v *visitor) Load(filename string) (ast.Node, error) {
 	// get node to parse
 	node, err := parser.ParseFile(v.fset, filename, nil, parser.ParseComments)
 	if err != nil {
-		log.Error(err)
+		fmt.Fprintf(os.Stderr, "error parsing file: %s\n", err)
 		return nil, err
 	}
 	// check if the package is actually imported
