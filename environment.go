@@ -119,6 +119,12 @@ func Bool(key string) bool {
 	return false
 }
 
+// IsSet : returns if the environment variable is set
+func IsSet(key string) bool {
+	_, found := os.LookupEnv(key)
+	return found
+}
+
 // GetJSON : returns the environment value marshalled to input
 func JSON(key string, input interface{}) error {
 	if val, found := os.LookupEnv(key); found {
@@ -151,4 +157,14 @@ func GetOptional(keys []string) map[string]bool {
 		optionals[res[0][1]] = res[0][2] == "?"
 	}
 	return optionals
+}
+
+// NoWarn : remove warning logs
+func NoWarn() {
+	log.SetLevel(log.ERROR)
+}
+
+// NoLog : disable logging
+func NoLog() {
+	log.SetLevel(log.NONE)
 }

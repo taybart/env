@@ -15,5 +15,18 @@ func TestScan(t *testing.T) {
 		Tags: "test_tags,other_test",
 	})
 	is.NoErr(err)
-	is.True(strings.Compare(strings.ReplaceAll(res, "\n", ""), `ENV=""PORT="6969"BUILD_TAG=""`) == 0)
+	is.True(res.Equal(scan.Env{
+		Values: map[string]scan.EnvVar{
+			// main.go
+			"ENV":    {},
+			"PORT":   {Value: "6969", HasDefault: true},
+			"SECURE": {Optional: true},
+			// other.go (with build tags)
+			"BUILD_TAG_TEST": {},
+		}},
+	))
+	resF := strings.ReplaceAll(res.ToFile(), "\n", "")
+	is.True(strings.Compare(resF, `BUILD_TAG_TEST=""ENV=""PORT="6969"SECURE="value is marked as optional"`) == 0)
+
+	// fmt.Println(res.EnvByFile())
 }

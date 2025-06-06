@@ -25,7 +25,8 @@ type Config struct {
 	Validate   string `arg:"validate"`
 }
 
-func Scan(config Config) (string, error) {
+// TODO: output map, warn that project is not go project, expand_path
+func Scan(config Config) (Env, error) {
 	files := []string{}
 
 	switch {
@@ -63,13 +64,13 @@ func Scan(config Config) (string, error) {
 			return nil
 		})
 		if err != nil {
-			return "", err
+			return Env{}, err
 		}
 
 	case config.Files != "": // csv of files
 		files = strings.Split(config.Files, ",")
 	default:
-		return "", errors.New("no files specified")
+		return Env{}, errors.New("no files specified")
 	}
 
 	// Get down to buisness
@@ -87,7 +88,7 @@ func Scan(config Config) (string, error) {
 
 		envToTest, err := parseEnvFile(config.Validate)
 		if err != nil {
-			return "", err
+			return Env{}, err
 		}
 		missing := []string{}
 		usingDefault := []string{}
@@ -120,14 +121,16 @@ func Scan(config Config) (string, error) {
 				log.Warnf("Using default value for %s=%s\n", k, strings.Trim(d, `"`))
 			}
 		}
-		return "", nil
+		return Env{}, nil
 
 	}
 
-	if config.PrintFiles {
-		return v.EnvByFile(), nil
-	}
-	return v.ToEnvFile(), nil
+	return v.Finish(), nil
+
+	// if config.PrintFiles {
+	// 	return v.EnvByFile(), nil
+	// }
+	// return v.ToEnvFile(), nil
 }
 
 // Check if program has data piped to it

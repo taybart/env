@@ -5,5 +5,5 @@ package main
 import "github.com/taybart/env"
 
 func init() {
-	env.Add([]string{"BUILD_TAG"})
+	env.Add([]string{"BUILD_TAG_TEST"})
 }

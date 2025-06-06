@@ -10,6 +10,7 @@ func main() {
 	env.Add([]string{
 		"ENV",
 		"PORT=6969",
+		"SECURE?",
 	})
 
 	if env.Is("ENV", "production") {

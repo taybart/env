@@ -34,9 +34,8 @@ var (
 				Default: false,
 			},
 			"tags": {
-				Short:   "t",
-				Help:    "Use go build tags",
-				Default: "",
+				Short: "t",
+				Help:  "Use go build tags",
 			},
 		},
 	}
@@ -60,5 +59,11 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	fmt.Println(res)
+
+	if config.PrintFiles {
+		fmt.Println(res.EnvByFile())
+		return
+	}
+
+	fmt.Println(res.ToFile())
 }

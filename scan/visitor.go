@@ -2,13 +2,13 @@ package scan
 
 import (
 	"errors"
-	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
 	"strings"
 
 	"github.com/taybart/env"
+	"github.com/taybart/log"
 )
 
 type visitor struct {
@@ -35,7 +35,8 @@ func (v *visitor) Load(filename string) (ast.Node, error) {
 	// get node to parse
 	node, err := parser.ParseFile(v.fset, filename, nil, parser.ParseComments)
 	if err != nil {
-		panic(err)
+		log.Error(err)
+		return nil, err
 	}
 	// check if the package is actually imported
 	usesEnv := false
@@ -126,41 +127,59 @@ func (v visitor) EnvToMap() (map[string]string, map[string]bool) {
 	return envmap, optional
 }
 
-func (v visitor) ToEnvFile() string {
+func (v visitor) Finish() Env {
 	e := []string{}
 	for _, en := range v.env {
 		e = append(e, en...)
 	}
 	e = dedupe(e)
 
-	output := ""
 	optional := env.GetOptional(e)
-	for i, k := range e {
+	ret := NewEnv()
+	for _, k := range e {
 		key, val := env.GetDefault(k[1 : len(k)-1])
-		if optional[key] {
-			val = "Value is marked as optional"
-		}
-		output += fmt.Sprintf("%s=\"%s\"", key, val)
-		if i < len(e)-1 {
-			output += "\n"
-		}
+		ret.Values[key] = EnvVar{Value: val, Optional: optional[key], HasDefault: val != ""}
+
 	}
-	return output
+	ret.v = &v
+	return ret
 }
 
-func (v visitor) EnvByFile() string {
-	output := ""
-	for ns, e := range v.env {
-		optional := env.GetOptional(v.env[ns])
-		output += fmt.Sprintf("#%s\n", ns)
-		for _, k := range e {
-			key, val := env.GetDefault(k[1 : len(k)-1])
-			if optional[key] {
-				val = "Value is marked as optional"
-			}
-			output += fmt.Sprintf("%s=\"%s\"\n", key, val)
-		}
-		output += "\n"
-	}
-	return output
-}
+// func (v visitor) ToEnvFile() string {
+// 	e := []string{}
+// 	for _, en := range v.env {
+// 		e = append(e, en...)
+// 	}
+// 	e = dedupe(e)
+
+// 	output := ""
+// 	optional := env.GetOptional(e)
+// 	for i, k := range e {
+// 		key, val := env.GetDefault(k[1 : len(k)-1])
+// 		if optional[key] {
+// 			val = "Value is marked as optional"
+// 		}
+// 		output += fmt.Sprintf("%s=\"%s\"", key, val)
+// 		if i < len(e)-1 {
+// 			output += "\n"
+// 		}
+// 	}
+// 	return output
+// }
+
+// func (v visitor) EnvByFile() string {
+// 	output := ""
+// 	for ns, e := range v.env {
+// 		optional := env.GetOptional(v.env[ns])
+// 		output += fmt.Sprintf("#%s\n", ns)
+// 		for _, k := range e {
+// 			key, val := env.GetDefault(k[1 : len(k)-1])
+// 			if optional[key] {
+// 				val = "Value is marked as optional"
+// 			}
+// 			output += fmt.Sprintf("%s=\"%s\"\n", key, val)
+// 		}
+// 		output += "\n"
+// 	}
+// 	return output
+// }
