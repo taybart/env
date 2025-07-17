@@ -52,7 +52,7 @@ func TestDecode(t *testing.T) {
 	os.Setenv(k, "Y29vbCB2YXJpYWJsZQ==")
 	val, err := env.Decode(k)
 	is.NoErr(err)
-	is.True(val == "cool variable")
+	is.True(string(val) == "cool variable")
 }
 
 // TestHas : if value is set env.Has returns true

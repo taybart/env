@@ -90,22 +90,22 @@ func Get(key string) string {
 	return ""
 }
 
-// Decode : returns the environment value as a string decoded base64
-func Decode(key string) (string, error) {
+// Decode : returns the environment value as base64 decoded bytes
+func Decode(key string) ([]byte, error) {
 	if val, found := os.LookupEnv(key); found {
 		decoded, err := base64.StdEncoding.DecodeString(val)
 		if err != nil {
-			return "", err
+			return nil, err
 		}
-		return string(decoded), nil
+		return decoded, nil
 	}
 	log.Warnf("getting optional key %v\n", optionalKeys)
 	if _, found := optionalKeys[key]; found {
-		return "", nil
+		return nil, nil
 	}
 
 	log.Fatal("Trying to retrieve/decode uninitialized environment variable:", key)
-	return "", nil
+	return nil, nil
 }
 
 // Int : returns the key as an int or panics
