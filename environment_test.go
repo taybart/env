@@ -45,6 +45,16 @@ func TestGet(t *testing.T) {
 	is.True(env.Get(k) == "cool variable")
 }
 
+func TestDecode(t *testing.T) {
+	is := is.New(t)
+	k := "TestGet"
+	// set var
+	os.Setenv(k, "Y29vbCB2YXJpYWJsZQ==")
+	val, err := env.Decode(k)
+	is.NoErr(err)
+	is.True(val == "cool variable")
+}
+
 // TestHas : if value is set env.Has returns true
 func TestHas(t *testing.T) {
 	is := is.New(t)

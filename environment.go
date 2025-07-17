@@ -1,6 +1,7 @@
 package env
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -89,6 +90,24 @@ func Get(key string) string {
 	return ""
 }
 
+// Decode : returns the environment value as a string decoded base64
+func Decode(key string) (string, error) {
+	if val, found := os.LookupEnv(key); found {
+		decoded, err := base64.StdEncoding.DecodeString(val)
+		if err != nil {
+			return "", err
+		}
+		return string(decoded), nil
+	}
+	log.Warnf("getting optional key %v\n", optionalKeys)
+	if _, found := optionalKeys[key]; found {
+		return "", nil
+	}
+
+	log.Fatal("Trying to retrieve/decode uninitialized environment variable:", key)
+	return "", nil
+}
+
 // Int : returns the key as an int or panics
 func Int(key string) int {
 	if val, found := os.LookupEnv(key); found {
@@ -125,7 +144,7 @@ func IsSet(key string) bool {
 	return found
 }
 
-// GetJSON : returns the environment value marshalled to input
+// JSON : returns the environment value marshalled to input
 func JSON(key string, input interface{}) error {
 	if val, found := os.LookupEnv(key); found {
 		err := json.Unmarshal([]byte(val), input)
