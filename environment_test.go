@@ -18,6 +18,18 @@ func TestDefault(t *testing.T) {
 	is.True(env.Is(k, v))
 }
 
+func TestDefaultGuard(t *testing.T) {
+	is := is.New(t)
+	defer func() {
+		// we should panic here
+		is.True(recover() != nil)
+	}()
+	// Define key
+	k := "TEST_DEFAULT_GUARD"
+	env.Add([]string{fmt.Sprintf("%s=1", k)})
+	env.Add([]string{fmt.Sprintf("%s=2", k)})
+}
+
 // Test that optionals are set to zero value
 func TestOptionalKey(t *testing.T) {
 	is := is.New(t)
@@ -98,10 +110,8 @@ func TestInterface(t *testing.T) {
 
 	// test struct
 	var returned map[string]string
-	err := env.JSON(k, &returned)
-	is.NoErr(err)
+	is.NoErr(env.JSON(k, &returned))
 
 	// Should get the correct value
-	expected := "val"
-	is.True(returned["key"] == expected)
+	is.True(returned["key"] == "val")
 }

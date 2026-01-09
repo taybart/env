@@ -15,7 +15,13 @@ var (
 	keyRE = regexp.MustCompile(`([[:word:]]+)([=?])?(.*)?`)
 	// Optional keys that should be set to zero value
 	optionalKeys map[string]bool
+	defaults     map[string]string
 )
+
+func init() {
+	optionalKeys = make(map[string]bool)
+	defaults = make(map[string]string)
+}
 
 /* Add : environment variables for use later. This is global to the project
  * requred -> NAME
@@ -38,8 +44,8 @@ func Ensure(keys []string) error {
 	optionalKeys = GetOptional(keys)
 	for _, key := range keys {
 		fkey, val := GetDefault(key) // formatted key and default value
-		_, found := os.LookupEnv(fkey)
-		if !found {
+
+		if _, found := os.LookupEnv(fkey); !found {
 			if optionalKeys[fkey] {
 				log.Warnf("%s marked optional and not defined\n", fkey)
 				continue
@@ -47,9 +53,14 @@ func Ensure(keys []string) error {
 			if val != "" { // is there a default value?
 				log.Warnf("Setting %s to default value of %s\n", fkey, val)
 				os.Setenv(fkey, val)
+				defaults[fkey] = val
 				continue
 			}
 			missingKeys = append(missingKeys, key)
+		}
+		// was this previously set to something different?
+		if defaults[fkey] != "" && defaults[fkey] != val {
+			panic(fmt.Sprintf("Differing default value for %s [ %s!=%s ]\n", fkey, defaults[fkey], val))
 		}
 	}
 	for _, key := range missingKeys {
@@ -81,7 +92,7 @@ func Get(key string) string {
 	if val, found := os.LookupEnv(key); found {
 		return val
 	}
-	log.Warnf("getting optional key %v\n", optionalKeys)
+	log.Warnf("checking optional value %v\n", key)
 	if _, found := optionalKeys[key]; found {
 		return ""
 	}
@@ -99,7 +110,7 @@ func Decode(key string) ([]byte, error) {
 		}
 		return decoded, nil
 	}
-	log.Warnf("getting optional key %v\n", optionalKeys)
+	log.Warnf("checking for optional %v\n", key)
 	if _, found := optionalKeys[key]; found {
 		return nil, nil
 	}
@@ -145,7 +156,7 @@ func IsSet(key string) bool {
 }
 
 // JSON : returns the environment value marshalled to input
-func JSON(key string, input interface{}) error {
+func JSON(key string, input any) error {
 	if val, found := os.LookupEnv(key); found {
 		err := json.Unmarshal([]byte(val), input)
 		if err != nil {
