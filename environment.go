@@ -73,7 +73,7 @@ func Ensure(keys []string) error {
 	return nil
 }
 
-// Has : see if defined or has optional
+// Has : see if env var defined
 func Has(key string) bool {
 	_, b := os.LookupEnv(key)
 	return b
