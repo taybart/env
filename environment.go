@@ -149,9 +149,12 @@ func Bool(key string) bool {
 	return false
 }
 
-// IsSet : returns if the environment variable is set
+// IsSet : returns if the environment variable is set including a blank string
 func IsSet(key string) bool {
-	_, found := os.LookupEnv(key)
+	value, found := os.LookupEnv(key)
+	if found {
+		return value != ""
+	}
 	return found
 }
 
