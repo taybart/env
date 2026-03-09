@@ -79,6 +79,29 @@ func TestHas(t *testing.T) {
 	is.True(env.Has(key))
 }
 
+func TestIsSet(t *testing.T) {
+	is := is.New(t)
+	// Reset environment after test
+	defer os.Clearenv()
+	os.Setenv("REQUIRED_VAR", "")
+
+	err := env.Ensure([]string{
+		"REQUIRED_VAR",
+		"OPTIONAL_VAR?",
+		"DEFAULT_VAR=default",
+	})
+	is.NoErr(err)
+
+	// Test blank string value
+	is.True(!env.IsSet("REQUIRED_VAR"))
+
+	// Test optional var "OPTIONAL_VAR?"
+	is.True(!env.IsSet("OPTIONAL_VAR"))
+
+	// Test default var "DEFAULT_VAR=default"
+	is.True(env.IsSet("DEFAULT_VAR"))
+}
+
 func TestBool(t *testing.T) {
 	is := is.New(t)
 
